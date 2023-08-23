@@ -8,7 +8,8 @@ menu() {
   echo "3. 一键安装 XrayR"
   echo "4. 一键安装 iptables"
   echo "5. Speedtest 测试"
-  echo "6. 退出"
+  echo "6. 关闭 IPv6"
+  echo "7. 退出"
   read -p "请输入序号： " choice
 }
 
@@ -143,6 +144,34 @@ install_speedtest() {
   speedtest
 }
 
+# 关闭 IPv6
+disable_ipv6() {
+  echo "正在关闭 IPv6 ..."
+
+  # 在 sysctl.conf 中禁用 IPv6
+  echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+  echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+
+  # 在所有网络接口上禁用 IPv6
+  for interface in $(ls /sys/class/net/ | grep -v lo); do
+    echo "正在在 $interface 上禁用 IPv6"
+    echo "net.ipv6.conf.$interface.disable_ipv6 = 1" >> /etc/sysctl.conf
+  done
+
+  # 应用 sysctl 设置
+  sysctl -p
+
+  # 在网络接口配置文件中禁用 IPv6
+  for interface_file in $(ls /etc/network/interfaces.d/); do
+    echo "iface $(basename -s .cfg $interface_file) inet6 manual" >> /etc/network/interfaces.d/$interface_file
+  done
+
+  # 重启网络服务
+  systemctl restart networking
+
+  echo "IPv6 已被禁用"
+}
+
 # 主程序
 while true; do
   menu
@@ -163,6 +192,9 @@ while true; do
       install_speedtest
       ;;
     6)
+      disable_ipv6  # 调用关闭 IPv6 的函数
+      ;;
+    7)
       echo "退出程序。"
       exit 0
       ;;
