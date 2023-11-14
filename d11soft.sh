@@ -1,47 +1,60 @@
 #!/bin/bash
 
+# 定义ANSI颜色代码
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[1;34m'
+MAGENTA='\e[1;35m'
+CYAN='\e[1;36m'
+WHITE='\e[1;37m'
+RESET='\e[0m'
+
 # 菜单
 menu() {
-  echo "请选择操作："
-  echo "1. 安装必要脚本"
-  echo "2. 安装 Docker"
-  echo "3. 一键安装 XrayR"
-  echo "4. 一键安装 iptables"
-  echo "5. Speedtest 测试"
-  echo "6. 关闭 IPv6"
-  echo "7. 设置定时重启任务"
-  echo "8. 退出"
+  echo -e "${GREEN}请选择操作："
+  echo -e "1. 安装必要脚本"
+  echo -e "2. 安装 Docker"
+  echo -e "3. 一键安装 XrayR"
+  echo -e "4. 一键安装 iptables"
+  echo -e "5. Speedtest 测试"
+  echo -e "6. 关闭 IPv6"
+  echo -e "7. 设置定时重启任务"
+  echo -e "8. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
+
 # 设置定时重启任务
 schedule_reboot() {
-  echo "请选择定时重启任务的类型："
-  echo "1. 每天早上5点重启系统"
-  echo "2. 自定义重启时间"
+  echo -e "${YELLOW}请选择定时重启任务的类型："
+  echo -e "1. 每天早上5点重启系统"
+  echo -e "2. 自定义重启时间${RESET}"
   read -p "请输入选择的序号： " reboot_choice
 
   case $reboot_choice in
     1)
-      echo "正在设置标准定时重启任务..."
+      echo -e "${GREEN}正在设置标准定时重启任务..."
       # 创建标准的每天早上5点重启的定时任务
       echo "0 5 * * * root /sbin/reboot" | sudo tee -a /etc/crontab
-      echo "标准定时重启任务已设置，每天早上5点将进行系统重启。"
+      echo "标准定时重启任务已设置，每天早上5点将进行系统重启。${RESET}"
       ;;
     2)
-      echo "请输入自定义的定时重启时间，例如：每天下午3点重启系统，输入：15 0"
+      echo -e "${GREEN}请输入自定义的定时重启时间，例如：每天下午3点重启系统，输入：15 0"
       read -p "请输入定时任务的时间设置： " custom_time
       # 创建自定义时间的定时任务
       echo "$custom_time * * * root /sbin/reboot" | sudo tee -a /etc/crontab
-      echo "自定义定时重启任务已设置，每天$custom_time将进行系统重启。"
+      echo -e "自定义定时重启任务已设置，每天$custom_time将进行系统重启。${RESET}"
       ;;
     *)
-      echo "无效选择，请重新输入。"
+      echo -e "${RED}无效选择，请重新输入。${RESET}"
       ;;
   esac
-    # 显示当前的定时任务列表
-  echo "当前定时任务列表："
+
+  # 显示当前的定时任务列表
+  echo -e "${BLUE}当前定时任务列表："
   sudo crontab -l
+  echo -e "${RESET}"
 }
 
 # 检查并安装缺失的软件包
@@ -231,11 +244,11 @@ while true; do
       schedule_reboot  # 调用设置定时重启任务的函数
       ;;
     8)
-      echo "退出程序。"
+      echo -e "${MAGENTA}退出程序。${RESET}"
       exit 0
       ;;
     *)
-      echo "无效选择，请重新输入。"
+      echo -e "${RED}无效选择，请重新输入。${RESET}"
       ;;
   esac
 done
