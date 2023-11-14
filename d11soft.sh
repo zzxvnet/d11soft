@@ -9,8 +9,36 @@ menu() {
   echo "4. 一键安装 iptables"
   echo "5. Speedtest 测试"
   echo "6. 关闭 IPv6"
-  echo "7. 退出"
+  echo "7. 设置定时重启任务"
+  echo "8. 退出"
   read -p "请输入序号： " choice
+}
+
+# 设置定时重启任务
+schedule_reboot() {
+  echo "请选择定时重启任务的类型："
+  echo "1. 每天早上5点重启系统"
+  echo "2. 自定义重启时间"
+  read -p "请输入选择的序号： " reboot_choice
+
+  case $reboot_choice in
+    1)
+      echo "正在设置标准定时重启任务..."
+      # 创建标准的每天早上5点重启的定时任务
+      echo "0 5 * * * root /sbin/reboot" | sudo tee -a /etc/crontab
+      echo "标准定时重启任务已设置，每天早上5点将进行系统重启。"
+      ;;
+    2)
+      echo "请输入自定义的定时重启时间，例如：每天下午3点重启系统，输入：15 0"
+      read -p "请输入定时任务的时间设置： " custom_time
+      # 创建自定义时间的定时任务
+      echo "$custom_time * * * root /sbin/reboot" | sudo tee -a /etc/crontab
+      echo "自定义定时重启任务已设置，每天$custom_time将进行系统重启。"
+      ;;
+    *)
+      echo "无效选择，请重新输入。"
+      ;;
+  esac
 }
 
 # 检查并安装缺失的软件包
@@ -172,6 +200,8 @@ disable_ipv6() {
   echo "IPv6 已被禁用"
 }
 
+
+
 # 主程序
 while true; do
   menu
@@ -195,6 +225,9 @@ while true; do
       disable_ipv6  # 调用关闭 IPv6 的函数
       ;;
     7)
+      schedule_reboot  # 调用设置定时重启任务的函数
+      ;;
+    8)
       echo "退出程序。"
       exit 0
       ;;
