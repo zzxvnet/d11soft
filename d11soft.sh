@@ -39,6 +39,9 @@ schedule_reboot() {
       echo "无效选择，请重新输入。"
       ;;
   esac
+    # 显示当前的定时任务列表
+  echo "当前定时任务列表："
+  sudo crontab -l
 }
 
 # 检查并安装缺失的软件包
