@@ -27,34 +27,34 @@ menu() {
 
 # 设置定时重启任务
 schedule_reboot() {
-  echo -e "${YELLOW}请选择定时重启任务的类型："
-  echo -e "1. 每天早上5点重启系统"
-  echo -e "2. 自定义重启时间${RESET}"
+  printf "${YELLOW}请选择定时重启任务的类型：\n"
+  printf "1. 每天早上5点重启系统\n"
+  printf "2. 自定义重启时间${RESET}\n"
   read -p "请输入选择的序号： " reboot_choice
 
   case $reboot_choice in
     1)
-      echo -e "${GREEN}正在设置标准定时重启任务..."
+      printf "${GREEN}正在设置标准定时重启任务...\n"
       # 创建标准的每天早上5点重启的定时任务
-      echo "0 5 * * * root /sbin/reboot" | sudo tee -a /etc/crontab
-      echo "标准定时重启任务已设置，每天早上5点将进行系统重启。${RESET}"
+      echo "0 5 * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job
+      printf "标准定时重启任务已设置，每天早上5点将进行系统重启。${RESET}\n"
       ;;
     2)
-      echo -e "${GREEN}请输入自定义的定时重启时间，例如：每天下午3点重启系统，输入：15 0"
+      printf "${GREEN}请输入自定义的定时重启时间，例如：每天下午3点重启系统，输入：15 15\n"
       read -p "请输入定时任务的时间设置： " custom_time
       # 创建自定义时间的定时任务
-      echo "$custom_time * * * root /sbin/reboot" | sudo tee -a /etc/crontab
-      echo -e "自定义定时重启任务已设置，每天$custom_time将进行系统重启。${RESET}"
+      echo "$custom_time * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job
+      printf "自定义定时重启任务已设置，每天 $custom_time 将进行系统重启。${RESET}\n"
       ;;
     *)
-      echo -e "${RED}无效选择，请重新输入。${RESET}"
+      printf "${RED}无效选择，请重新输入。${RESET}\n"
       ;;
   esac
 
   # 显示当前的定时任务列表
-  echo -e "${BLUE}当前定时任务列表："
-  sudo crontab -l
-  echo -e "${RESET}"
+  printf "${BLUE}当前定时任务列表：\n"
+  sudo cat /etc/cron.d/my_custom_reboot_job
+  printf "${RESET}\n"
 }
 
 # 检查并安装缺失的软件包
