@@ -20,7 +20,8 @@ menu() {
   echo -e "5. Speedtest 测试"
   echo -e "6. 关闭 IPv6"
   echo -e "7. 设置定时重启任务"
-  echo -e "8. 退出${RESET}"
+  echo -e "8. 安装性能测试工具 wrk"
+  echo -e "9. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
@@ -216,9 +217,25 @@ disable_ipv6() {
   echo "IPv6 已被禁用"
 }
 
+# 安装性能测试工具wrk
+install_wrk() {
+  if ! command -v wrk &>/dev/null; then
+    echo "正在安装 wrk ..."
+    sudo apt-get install -y wrk
+  else
+    echo "wrk 已经安装。"
+  fi
+}
+
+# 运行wrk性能测试
+run_wrk_test() {
+  read -p "请输入要测试的网址： " url
+  wrk -c 100 -t 10 "$url"
+}
 
 
-# 主程序
+
+# Main program
 while true; do
   menu
   case $choice in
@@ -238,14 +255,18 @@ while true; do
       install_speedtest
       ;;
     6)
-      disable_ipv6  # 调用关闭 IPv6 的函数
+      disable_ipv6
       ;;
     7)
-      schedule_reboot  # 调用设置定时重启任务的函数
+      schedule_reboot
       ;;
     8)
       echo -e "${MAGENTA}退出程序。${RESET}"
       exit 0
+      ;;
+    9)
+      install_wrk
+      run_wrk_test
       ;;
     *)
       echo -e "${RED}无效选择，请重新输入。${RESET}"
