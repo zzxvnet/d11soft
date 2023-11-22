@@ -231,6 +231,8 @@ install_wrk() {
 run_wrk_test() {
   read -p "请输入要测试的网址： " url
   wrk -c 100 -t 10 "$url"
+  echo -e "${GREEN}性能测试已完成。${RESET}"
+  read -p "按 Enter 返回主菜单。"
 }
 
 
@@ -260,10 +262,11 @@ while true; do
     7)
       schedule_reboot
       ;;
- 8)
+    8)
       install_wrk
       run_wrk_test
       ;;
+   
     9)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
@@ -271,5 +274,5 @@ while true; do
     *)
       echo -e "${RED}无效选择，请重新输入。${RESET}"
       ;;
-esac
+  esac
 done
