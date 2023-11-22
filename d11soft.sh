@@ -260,16 +260,16 @@ while true; do
     7)
       schedule_reboot
       ;;
-    8)
-      echo -e "${MAGENTA}退出程序。${RESET}"
-      exit 0
-      ;;
-    9)
+ 8)
       install_wrk
       run_wrk_test
+      ;;
+    9)
+      echo -e "${MAGENTA}退出程序。${RESET}"
+      break
       ;;
     *)
       echo -e "${RED}无效选择，请重新输入。${RESET}"
       ;;
-  esac
+esac
 done
