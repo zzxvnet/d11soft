@@ -229,7 +229,7 @@ install_wrk() {
 
 # 运行wrk性能测试
 run_wrk_test() {
-  read -p "请输入要测试的网址： " url
+  read -p "${GREEN}请输入要测试的网址：${RESET} " url
   wrk -c 100 -t 10 "$url"
   echo -e "${GREEN}性能测试已完成。${RESET}"
   read -p "按 Enter 返回主菜单。"
