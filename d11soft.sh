@@ -254,7 +254,12 @@ modify_dns() {
   echo "nameserver $dns_address" | sudo tee /etc/resolv.conf >/dev/null
   sudo chattr +i /etc/resolv.conf
   echo "DNS已修改为 $dns_address 并且设置为不可更改。"
+
+  # 执行 nslookup 命令以验证 DNS 修改
+  echo "正在执行 nslookup youtube.com："
+  nslookup youtube.com
 }
+
 
 # 流媒体解锁功能
 streaming_unlock() {
