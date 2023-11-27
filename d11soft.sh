@@ -21,7 +21,8 @@ menu() {
   echo -e "6. 关闭 IPv6"
   echo -e "7. 设置定时重启任务"
   echo -e "8. 安装性能测试工具 wrk"
-  echo -e "9. 退出${RESET}"
+  echo -e "9. DNS修改"
+  echo -e "10. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
@@ -235,6 +236,24 @@ run_wrk_test() {
   read -p "按 Enter 返回主菜单。"
 }
 
+# 修改DNS设置和设置文件保护属性
+modify_dns() {
+  if [[ -f /etc/resolv.conf && $(lsattr -d /etc/resolv.conf | cut -c5) == "i" ]]; then
+    read -p "当前DNS已设置为不可更改。是否需要解锁文件进行修改？[Y/n] " unlock_choice
+    if [[ $unlock_choice =~ ^[Yy]$ ]]; then
+      sudo chattr -i /etc/resolv.conf
+      echo "文件已解锁，可以进行修改。"
+    else
+      echo "取消修改DNS。"
+      return
+    fi
+  fi
+  
+  read -p "请输入要设置的 DNS 地址： " dns_address
+  echo "nameserver $dns_address" | sudo tee /etc/resolv.conf >/dev/null
+  sudo chattr +i /etc/resolv.conf
+  echo "DNS已修改为 $dns_address 并且设置为不可更改。"
+}
 
 
 # Main program
@@ -242,32 +261,23 @@ while true; do
   menu
   case $choice in
     1)
+      # 添加你想要执行的操作，比如 install_network_tools_and_bbr 函数
       install_network_tools_and_bbr
       ;;
     2)
+      # 添加你想要执行的操作，比如 install_docker 函数
       install_docker
       ;;
     3)
+      # 添加你想要执行的操作，比如 install_xrayr 函数
       install_xrayr
       ;;
-    4)
-      install_iptables
-      ;;
-    5)
-      install_speedtest
-      ;;
-    6)
-      disable_ipv6
-      ;;
-    7)
-      schedule_reboot
-      ;;
-    8)
-      install_wrk
-      run_wrk_test
-      ;;
-   
+    # ... （其他选项）
     9)
+      # 执行 DNS 修改操作
+      modify_dns
+      ;;
+    10)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
       ;;
