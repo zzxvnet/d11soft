@@ -22,7 +22,8 @@ menu() {
   echo -e "7. 设置定时重启任务"
   echo -e "8. 安装性能测试工具 wrk"
   echo -e "9. DNS修改"
-  echo -e "10. 退出${RESET}"
+  echo -e "10. 流媒体解锁"
+  echo -e "11. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
@@ -255,6 +256,28 @@ modify_dns() {
   echo "DNS已修改为 $dns_address 并且设置为不可更改。"
 }
 
+# 流媒体解锁功能
+streaming_unlock() {
+  echo -e "${YELLOW}请选择流媒体解锁命令："
+  echo -e "1. bash <(curl -L -s check.unlock.media)"
+  echo -e "2. bash <(curl -L -s https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)${RESET}"
+  read -p "请输入选择的序号： " streaming_choice
+
+  case $streaming_choice in
+    1)
+      echo "正在执行流媒体解锁命令 1："
+      bash <(curl -L -s check.unlock.media)
+      ;;
+    2)
+      echo "正在执行流媒体解锁命令 2："
+      bash <(curl -L -s https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
+      ;;
+    *)
+      echo -e "${RED}无效选择，请重新输入。${RESET}"
+      ;;
+  esac
+}
+
 
 # Main program
 while true; do
@@ -278,6 +301,9 @@ while true; do
       modify_dns
       ;;
     10)
+      streaming_unlock
+      ;;
+    11)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
       ;;
