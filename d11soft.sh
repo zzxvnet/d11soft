@@ -284,30 +284,20 @@ streaming_unlock() {
 }
 
 
-# Main program
+# 主程序
 while true; do
   menu
   case $choice in
-    1)
-      # 添加你想要执行的操作，比如 install_network_tools_and_bbr 函数
-      install_network_tools_and_bbr
-      ;;
-    2)
-      # 添加你想要执行的操作，比如 install_docker 函数
-      install_docker
-      ;;
-    3)
-      # 添加你想要执行的操作，比如 install_xrayr 函数
-      install_xrayr
-      ;;
-    # ... （其他选项）
-    9)
-      # 执行 DNS 修改操作
-      modify_dns
-      ;;
-    10)
-      streaming_unlock
-      ;;
+    1) install_network_tools_and_bbr ;;
+    2) install_docker ;;
+    3) install_xrayr ;;
+    4) install_iptables ;;
+    5) install_speedtest ;;
+    6) disable_ipv6 ;;
+    7) schedule_reboot ;;
+    8) install_wrk ;;
+    9) modify_dns ;;
+    10) streaming_unlock ;;
     11)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
