@@ -24,7 +24,8 @@ menu() {
   echo -e "9. DNS修改"
   echo -e "10. 流媒体解锁"
   echo -e "11. 使用 tcptraceroute"
-  echo -e "12. 退出${RESET}"
+  echo -e "12. 使用 iperf3 网络测试"
+  echo -e "13. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
@@ -300,6 +301,36 @@ use_tcptraceroute() {
   echo "正在使用 tcptraceroute 进行测试..."
   tcptraceroute $target_ip $target_port
 }
+# 新功能函数
+use_iperf3() {
+  # 检查是否已安装 iperf3
+  if ! command -v iperf3 &>/dev/null; then
+    echo "正在安装 iperf3 ..."
+    sudo apt-get update
+    sudo apt-get install -y iperf3
+  fi
+
+  read -p "您想作为服务端还是客户端？[server/client]: " iperf_choice
+
+  if [[ $iperf_choice == "server" ]]; then
+    echo "作为服务端运行 iperf3 ..."
+    iperf3 -s
+  elif [[ $iperf_choice == "client" ]]; then
+    read -p "请输入目标 IP 地址： " target_ip
+    read -p "您是否想要进行反向测试？[Y/n]: " reverse_choice
+
+    if [[ $reverse_choice == "Y" || $reverse_choice == "y" ]]; then
+      echo "作为客户端连接至 $target_ip 并进行反向测试..."
+      iperf3 -c $target_ip -R
+    else
+      echo "作为客户端连接至 $target_ip..."
+      iperf3 -c $target_ip
+    fi
+  else
+    echo "无效的选择。"
+  fi
+}
+
 
 # 主程序
 while true; do
@@ -316,7 +347,8 @@ while true; do
     9) modify_dns ;;
     10) streaming_unlock ;;
     11) use_tcptraceroute ;;
-    12)
+    12) use_iperf3 ;;
+    13)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
       ;;
