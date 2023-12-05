@@ -363,13 +363,13 @@ run_besttrace() {
     # 安装besttrace命令
     if command -v yum &>/dev/null; then
       sudo yum install -y wget unzip
-      wget https://cdn.ipip.net/17mon/besttrace4linux.zip
+      wget http://soft.xiaoz.org/linux/besttrace4linux.zip
       unzip besttrace4linux.zip
       chmod +x besttrace
     elif command -v apt-get &>/dev/null; then
       sudo apt-get update
       sudo apt-get install -y wget unzip
-      wget https://cdn.ipip.net/17mon/besttrace4linux.zip
+      wget http://soft.xiaoz.org/linux/besttrace4linux.zip
       unzip besttrace4linux.zip
       chmod +x besttrace
     else
