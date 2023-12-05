@@ -310,16 +310,16 @@ use_iperf3() {
     sudo apt-get install -y iperf3
   fi
 
-  printf "${CYAN}您想作为服务端还是客户端？[S/C]: ${RESET}"
+  printf "${GREEN}您想作为服务端还是客户端？[S/C]: ${RESET}"
   read -r iperf_choice
 
   if [[ $iperf_choice == "S" || $iperf_choice == "s" ]]; then
     printf "${GREEN}作为服务端运行 iperf3 ...\n${RESET}"
     iperf3 -s
   elif [[ $iperf_choice == "C" || $iperf_choice == "c" ]]; then
-    printf "${CYAN}请输入目标 IP 地址： ${RESET}"
+    printf "${GREEN}请输入目标 IP 地址： ${RESET}"
     read -r target_ip
-    printf "${CYAN}您是否想要进行反向测试？[Y/n]: ${RESET}"
+    printf "${GREEN}您是否想要进行反向测试？[Y/n]: ${RESET}"
     read -r reverse_choice
 
     if [[ $reverse_choice == "Y" || $reverse_choice == "y" ]]; then
