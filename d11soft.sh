@@ -399,10 +399,11 @@ run_besttrace() {
 
   # 执行besttrace命令
   echo "执行 besttrace 命令，跟踪至中国的路由..."
-  besttrace "$local_ip" -g cn
+  besttrace -q1 -g cn "$local_ip"
 
   echo -e "${RESET}\nbesttrace 命令执行完成。\n"
 }
+
 
 
 # 主程序
