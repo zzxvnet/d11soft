@@ -357,9 +357,31 @@ run_besttrace() {
   read -p "请输入您的本地IP地址： " local_ip
 
   # 检查是否已安装besttrace
-  if ! command -v ./besttrace &>/dev/null; then
-    echo -e "${YELLOW}找不到 besttrace 或未安装 besttrace。请将 besttrace 文件放置在脚本同一目录下。\n"
-    return 1
+  if ! command -v besttrace &>/dev/null; then
+    echo -e "${YELLOW}未安装 besttrace，正在尝试安装...\n"
+
+    # 安装besttrace命令
+    if command -v yum &>/dev/null; then
+      sudo yum install -y wget unzip
+      wget https://cdn.ipip.net/17mon/besttrace4linux.zip
+      unzip besttrace4linux.zip
+      chmod +x besttrace
+    elif command -v apt-get &>/dev/null; then
+      sudo apt-get update
+      sudo apt-get install -y wget unzip
+      wget https://cdn.ipip.net/17mon/besttrace4linux.zip
+      unzip besttrace4linux.zip
+      chmod +x besttrace
+    else
+      echo -e "${RED}无法找到适用的包管理器。\n"
+      return 1
+    fi
+
+    # 检查安装是否成功
+    if ! command -v besttrace &>/dev/null; then
+      echo -e "${RED}无法安装 besttrace。\n"
+      return 1
+    fi
   fi
 
   # 执行besttrace命令
@@ -368,6 +390,7 @@ run_besttrace() {
 
   echo -e "${RESET}\nbesttrace 命令执行完成。\n"
 }
+
 
 # 主程序
 while true; do
