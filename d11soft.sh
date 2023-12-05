@@ -151,6 +151,9 @@ install_xrayr() {
   fi
 }
 
+# 获取默认网关接口
+gateway_interface=$(ip route | awk '/default/ { print $5 }')
+
 # 第四个菜单选项
 install_iptables() {
   # 检查是否已安装iptables
@@ -169,11 +172,12 @@ install_iptables() {
 
   # 设置iptables规则
   echo "设置iptables规则，将流量转发到 $target_ip 的 $target_port 端口..."
-  sudo iptables -t nat -A PREROUTING -p tcp -i eth0 --dport $target_port -j DNAT --to-destination $target_ip:$target_port
+  sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport $target_port -j DNAT --to-destination $target_ip:$target_port
   sudo iptables -t nat -A POSTROUTING -j MASQUERADE
 
   echo -e "${RESET}\niptables规则设置完成。\n"
 }
+
 # 启用IP转发
 enable_ip_forward() {
   echo -e "${GREEN}启用IP转发...\n"
