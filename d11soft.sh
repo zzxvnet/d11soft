@@ -25,7 +25,8 @@ menu() {
   echo -e "10. 流媒体解锁"
   echo -e "11. 使用 tcptraceroute"
   echo -e "12. 使用 iperf3 网络测试"
-  echo -e "13. 退出${RESET}"
+  echo -e "13. 运行 besttrace 跟踪回城路由"
+  echo -e "14. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
@@ -349,6 +350,19 @@ use_iperf3() {
     echo "无效的选择。"
   fi
 }
+  # 检查是否已安装besttrace
+  if ! command -v besttrace &>/dev/null; then
+    echo -e "${YELLOW}正在安装 besttrace ..."
+    # 在此处添加安装besttrace的命令，具体取决于您从哪里获取besttrace
+    # 示例命令：wget https://www.ipip.net/download/BestTrace.zip && unzip BestTrace.zip && cd BestTrace && chmod +x besttrace
+  fi
+
+  # 执行besttrace命令
+  echo "执行 besttrace 命令，跟踪至中国的路由..."
+  ./besttrace "$local_ip" -g cn
+
+  echo -e "${RESET}\nbesttrace 命令执行完成。\n"
+}
 
 
 # 主程序
@@ -367,7 +381,8 @@ while true; do
     10) streaming_unlock ;;
     11) use_tcptraceroute ;;
     12) use_iperf3 ;;
-    13)
+    13) run_besttrace ;;
+    14)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
       ;;
