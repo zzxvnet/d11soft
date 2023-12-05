@@ -364,13 +364,13 @@ run_besttrace() {
     if command -v yum &>/dev/null; then
       sudo yum install -y wget unzip
       wget http://soft.xiaoz.org/linux/besttrace4linux.zip
-      unzip besttrace4linux.zip
+      unzip -a besttrace4linux.zip
       chmod +x besttrace
     elif command -v apt-get &>/dev/null; then
       sudo apt-get update
       sudo apt-get install -y wget unzip
       wget http://soft.xiaoz.org/linux/besttrace4linux.zip
-      unzip besttrace4linux.zip
+      unzip -a besttrace4linux.zip
       chmod +x besttrace
     else
       echo -e "${RED}无法找到适用的包管理器。\n"
