@@ -358,35 +358,48 @@ run_besttrace() {
 
   # 检查是否已安装besttrace
   if ! command -v besttrace &>/dev/null; then
-    echo -e "${YELLOW}未安装 besttrace，正在尝试安装...\n"
+    echo -e "${YELLOW}未找到 besttrace，正在尝试下载并解压...\n"
 
-    # 安装besttrace命令
-    if command -v yum &>/dev/null; then
-      sudo yum install -y wget unzip
-      wget http://soft.xiaoz.org/linux/besttrace4linux.zip
-      unzip -a besttrace4linux.zip
-      chmod +x besttrace
-    elif command -v apt-get &>/dev/null; then
-      sudo apt-get update
-      sudo apt-get install -y wget unzip
-      wget http://soft.xiaoz.org/linux/besttrace4linux.zip
-      unzip -a besttrace4linux.zip
-      chmod +x besttrace
-    else
-      echo -e "${RED}无法找到适用的包管理器。\n"
-      return 1
-    fi
+    # 尝试两个下载地址
+    download_urls=(
+      "https://cdn.ipip.net/17mon/besttrace4linux.zip"
+      "http://soft.xiaoz.org/linux/besttrace4linux.zip"
+    )
 
-    # 检查安装是否成功
-    if ! command -v besttrace &>/dev/null; then
-      echo -e "${RED}无法安装 besttrace。\n"
-      return 1
-    fi
+    # 下载并解压besttrace4linux.zip文件
+    for url in "${download_urls[@]}"; do
+      echo "正在尝试下载 $url ..."
+      if command -v wget &>/dev/null; then
+        wget "$url" -O besttrace4linux.zip
+      elif command -v curl &>/dev/null; then
+        curl -o besttrace4linux.zip "$url"
+      else
+        echo -e "${RED}无法下载文件，请确保安装了wget或curl。\n"
+        return 1
+      fi
+
+      # 检查下载的zip文件是否存在
+      if [ -f "besttrace4linux.zip" ]; then
+        unzip besttrace4linux.zip
+        chmod +x besttrace
+        mv besttrace /usr/local/bin/   # 或者你可以移动到其他系统路径中
+
+        # 检查besttrace是否安装成功
+        if command -v besttrace &>/dev/null; then
+          break  # 如果成功安装则跳出循环
+        else
+          echo -e "${RED}无法安装 besttrace。\n"
+          return 1
+        fi
+      else
+        echo -e "${RED}下载的 zip 文件不存在。\n"
+      fi
+    done
   fi
 
   # 执行besttrace命令
   echo "执行 besttrace 命令，跟踪至中国的路由..."
-  ./besttrace "$local_ip" -g cn
+  besttrace "$local_ip" -g cn
 
   echo -e "${RESET}\nbesttrace 命令执行完成。\n"
 }
