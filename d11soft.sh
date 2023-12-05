@@ -151,32 +151,47 @@ install_xrayr() {
   fi
 }
 
-# 一键安装 iptables
+# 第四个菜单选项
 install_iptables() {
-  echo "正在下载 iptables 安装脚本..."
-  wget -q -O iptables_install.sh --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/iptables-pf.sh
-  chmod +x iptables_install.sh
-  echo "下载完成。"
+  # 检查是否已安装iptables
+  if ! command -v iptables &>/dev/null; then
+    echo -e "${YELLOW}正在安装 iptables ..."
+    sudo apt-get update
+    sudo apt-get install -y iptables
+  fi
 
-  # 询问用户是否要安装 iptables
-  while true; do
-    read -p "是否要安装 iptables？[Y/n] " yn
-    case $yn in
-      [Yy]* ) 
-        echo "正在安装 iptables..."
-        bash iptables_install.sh
-        break
-        ;;
-      [Nn]* ) 
-        echo "跳过安装 iptables。"
-        break
-        ;;
-      * )
-        echo "请输入 Y (yes) 或者 N (no)。"
-        ;;
-    esac
-  done
+  enable_ip_forward  # 启用IP转发
+
+  echo -e "${GREEN}开始设置iptables规则...\n"
+
+  read -p "请输入要转发的目标IP地址： " target_ip
+  read -p "请输入要转发的目标端口号： " target_port
+
+  # 设置iptables规则
+  echo "设置iptables规则，将流量转发到 $target_ip 的 $target_port 端口..."
+  sudo iptables -t nat -A PREROUTING -p tcp -i eth0 --dport $target_port -j DNAT --to-destination $target_ip:$target_port
+  sudo iptables -t nat -A POSTROUTING -j MASQUERADE
+
+  echo -e "${RESET}\niptables规则设置完成。\n"
 }
+# 启用IP转发
+enable_ip_forward() {
+  echo -e "${GREEN}启用IP转发...\n"
+  
+  # 检查是否已启用IP转发
+  if ! grep -qxF 'net.ipv4.ip_forward=1' /etc/sysctl.conf; then
+    echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
+  else
+    echo "IP转发已经启用。"
+  fi
+
+  # 应用更改
+  sudo sysctl -p
+
+  echo -e "${RESET}\nIP转发已启用。\n"
+}
+
+
 
 # Speedtest 测试
 install_speedtest() {
