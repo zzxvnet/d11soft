@@ -305,29 +305,29 @@ use_tcptraceroute() {
 use_iperf3() {
   # 检查是否已安装 iperf3
   if ! command -v iperf3 &>/dev/null; then
-    echo "正在安装 iperf3 ..."
+    echo -e "${YELLOW}正在安装 iperf3 ..."
     sudo apt-get update
     sudo apt-get install -y iperf3
   fi
 
-  read -p "您想作为服务端还是客户端？[S/C]: " iperf_choice
+  read -p "${CYAN}您想作为服务端还是客户端？[S/C]: ${RESET}" iperf_choice
 
   if [[ $iperf_choice == "S" || $iperf_choice == "s" ]]; then
-    echo "作为服务端运行 iperf3 ..."
+    echo -e "${GREEN}作为服务端运行 iperf3 ..."
     iperf3 -s
   elif [[ $iperf_choice == "C" || $iperf_choice == "c" ]]; then
-    read -p "请输入目标 IP 地址： " target_ip
-    read -p "您是否想要进行反向测试？[Y/n]: " reverse_choice
+    read -p "${CYAN}请输入目标 IP 地址： ${RESET}" target_ip
+    read -p "${CYAN}您是否想要进行反向测试？[Y/n]: ${RESET}" reverse_choice
 
     if [[ $reverse_choice == "Y" || $reverse_choice == "y" ]]; then
-      echo "作为客户端连接至 $target_ip 并进行反向测试..."
+      echo -e "${GREEN}作为客户端连接至 $target_ip 并进行反向测试..."
       iperf3 -c $target_ip -R
     else
-      echo "作为客户端连接至 $target_ip..."
+      echo -e "${GREEN}作为客户端连接至 $target_ip..."
       iperf3 -c $target_ip
     fi
   else
-    echo "无效的选择。"
+    echo -e "${RED}无效的选择。${RESET}"
   fi
 }
 
