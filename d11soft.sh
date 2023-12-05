@@ -356,11 +356,12 @@ run_besttrace() {
 
   read -p "请输入您的本地IP地址： " local_ip
 
-  # 检查是否已安装besttrace
+  # 检查是否已安装besttrace，如果不存在则下载安装
   if ! command -v besttrace &>/dev/null; then
     echo -e "${YELLOW}正在安装 besttrace ..."
-    # 在此处添加安装besttrace的命令，具体取决于您从哪里获取besttrace
-    # 示例命令：wget https://www.ipip.net/download/BestTrace.zip && unzip BestTrace.zip && cd BestTrace && chmod +x besttrace
+    wget -O besttrace https://cdn.ipip.net/17mon/besttrace4linux.zip
+    unzip besttrace
+    chmod +x besttrace
   fi
 
   # 执行besttrace命令
@@ -369,6 +370,7 @@ run_besttrace() {
 
   echo -e "${RESET}\nbesttrace 命令执行完成。\n"
 }
+
 # 主程序
 while true; do
   menu
