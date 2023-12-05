@@ -23,7 +23,8 @@ menu() {
   echo -e "8. 安装性能测试工具 wrk"
   echo -e "9. DNS修改"
   echo -e "10. 流媒体解锁"
-  echo -e "11. 退出${RESET}"
+  echo -e "11. 使用 tcptraceroute"
+  echo -e "12. 退出${RESET}"
   read -p "请输入序号： " choice
 }
 
@@ -282,7 +283,23 @@ streaming_unlock() {
       ;;
   esac
 }
+# tcptraceroute
+use_tcptraceroute() {
+  # 检查是否已安装 tcptraceroute
+  if ! command -v tcptraceroute &>/dev/null; then
+    echo "正在安装 tcptraceroute ..."
+    sudo apt-get update
+    sudo apt-get install -y tcptraceroute
+  fi
 
+  # 提示用户输入测试IP和端口
+  read -p "请输入要测试的目标IP地址： " target_ip
+  read -p "请输入要测试的端口号： " target_port
+
+  # 使用 tcptraceroute 进行测试
+  echo "正在使用 tcptraceroute 进行测试..."
+  tcptraceroute $target_ip $target_port
+}
 
 # 主程序
 while true; do
@@ -298,7 +315,8 @@ while true; do
     8) install_wrk ;;
     9) modify_dns ;;
     10) streaming_unlock ;;
-    11)
+    11) use_tcptraceroute ;;
+    12)
       echo -e "${MAGENTA}退出程序。${RESET}"
       break
       ;;
