@@ -310,26 +310,30 @@ use_iperf3() {
     sudo apt-get install -y iperf3
   fi
 
-  read -p "${CYAN}您想作为服务端还是客户端？[S/C]: ${RESET}" iperf_choice
+  printf "${CYAN}您想作为服务端还是客户端？[S/C]: ${RESET}"
+  read -r iperf_choice
 
   if [[ $iperf_choice == "S" || $iperf_choice == "s" ]]; then
-    echo -e "${GREEN}作为服务端运行 iperf3 ..."
+    printf "${GREEN}作为服务端运行 iperf3 ...\n${RESET}"
     iperf3 -s
   elif [[ $iperf_choice == "C" || $iperf_choice == "c" ]]; then
-    read -p "${CYAN}请输入目标 IP 地址： ${RESET}" target_ip
-    read -p "${CYAN}您是否想要进行反向测试？[Y/n]: ${RESET}" reverse_choice
+    printf "${CYAN}请输入目标 IP 地址： ${RESET}"
+    read -r target_ip
+    printf "${CYAN}您是否想要进行反向测试？[Y/n]: ${RESET}"
+    read -r reverse_choice
 
     if [[ $reverse_choice == "Y" || $reverse_choice == "y" ]]; then
-      echo -e "${GREEN}作为客户端连接至 $target_ip 并进行反向测试..."
-      iperf3 -c $target_ip -R
+      printf "${GREEN}作为客户端连接至 $target_ip 并进行反向测试...\n${RESET}"
+      iperf3 -c "$target_ip" -R
     else
-      echo -e "${GREEN}作为客户端连接至 $target_ip..."
-      iperf3 -c $target_ip
+      printf "${GREEN}作为客户端连接至 $target_ip...\n${RESET}"
+      iperf3 -c "$target_ip"
     fi
   else
     echo -e "${RED}无效的选择。${RESET}"
   fi
 }
+
 
 # 主程序
 while true; do
