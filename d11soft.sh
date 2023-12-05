@@ -350,6 +350,12 @@ use_iperf3() {
     echo "无效的选择。"
   fi
 }
+# 第五个菜单选项：运行besttrace
+run_besttrace() {
+  echo -e "${GREEN}开始执行 besttrace 命令...\n"
+
+  read -p "请输入您的本地IP地址： " local_ip
+
   # 检查是否已安装besttrace
   if ! command -v besttrace &>/dev/null; then
     echo -e "${YELLOW}正在安装 besttrace ..."
@@ -363,8 +369,6 @@ use_iperf3() {
 
   echo -e "${RESET}\nbesttrace 命令执行完成。\n"
 }
-
-
 # 主程序
 while true; do
   menu
