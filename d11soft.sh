@@ -169,15 +169,32 @@ install_iptables() {
   echo -e "${GREEN}开始设置iptables规则...\n"
 
   read -p "请输入要转发的目标IP地址： " target_ip
-  read -p "请输入要转发的目标端口号： " target_port
+  read -p "请选择转发方式：\n  1. 端口到端口\n  2. Web端口转发\n  3. 全端口转发\n请选择[1/2/3]: " forward_choice
 
-  # 设置iptables规则
-  echo "设置iptables规则，将流量转发到 $target_ip 的 $target_port 端口..."
-  sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport $target_port -j DNAT --to-destination $target_ip:$target_port
-  sudo iptables -t nat -A POSTROUTING -j MASQUERADE
+  case $forward_choice in
+    1)
+      read -p "请输入源端口： " source_port
+      read -p "请输入目标端口： " target_port
+      # 端口到端口转发规则
+      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport $source_port -j DNAT --to-destination $target_ip:$target_port
+      ;;
+    2)
+      # Web端口转发规则
+      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport 80 -j DNAT --to-destination $target_ip:8080
+      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport 443 -j DNAT --to-destination $target_ip:8443
+      ;;
+    3)
+      # 全端口转发规则
+      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --sport 1:65535 -j DNAT --to-destination $target_ip:B
+      ;;
+    *)
+      echo -e "${RED}无效选择，请重新输入。${RESET}"
+      ;;
+  esac
 
   echo -e "${RESET}\niptables规则设置完成。\n"
 }
+
 
 # 启用IP转发
 enable_ip_forward() {
