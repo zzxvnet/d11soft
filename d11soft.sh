@@ -459,47 +459,50 @@ main_menu() {
 
 # 主程序
 while true; do
-# 主菜单
-menu() {
-  echo -e "${GREEN}请选择操作："
-  echo -e "1. 安装必要脚本"
-  echo -e "2. 安装 Docker"
-  echo -e "3. 一键安装 XrayR"
-  echo -e "4. 一键安装 iptables"
-  echo -e "5. Speedtest 测试"
-  echo -e "6. 关闭 IPv6"
-  echo -e "7. 设置定时重启任务"
-  echo -e "8. 安装性能测试工具 wrk"
-  echo -e "9. DNS修改"
-  echo -e "10. 流媒体解锁"
-  echo -e "11. 使用 tcptraceroute"
-  echo -e "12. 使用 iperf3 网络测试"
-  echo -e "13. 运行 besttrace 跟踪回城路由"
-  echo -e "14. Dnsmasq解锁Netflix管理"  # 添加一个新选项
-  echo -e "15. 退出${RESET}"
-  read -p "请输入序号： " choice
-  
-  case $choice in
-    1) install_network_tools_and_bbr ;;
-    2) install_docker ;;
-    3) install_xrayr ;;
-    4) install_iptables ;;
-    5) install_speedtest ;;
-    6) disable_ipv6 ;;
-    7) schedule_reboot ;;
-    8) install_wrk ;;
-    9) modify_dns ;;
-    10) streaming_unlock ;;
-    11) use_tcptraceroute ;;
-    12) use_iperf3 ;;
-    13) run_besttrace ;;
-    14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
-    15)
-      echo -e "${MAGENTA}退出程序。${RESET}"
-      exit 0
-      ;;
-    *)
-      echo -e "${RED}无效选择，请重新输入。${RESET}"
-      ;;
-  esac
+  # 主菜单
+  menu() {
+    echo -e "${GREEN}请选择操作："
+    echo -e "1. 安装必要脚本"
+    echo -e "2. 安装 Docker"
+    echo -e "3. 一键安装 XrayR"
+    echo -e "4. 一键安装 iptables"
+    echo -e "5. Speedtest 测试"
+    echo -e "6. 关闭 IPv6"
+    echo -e "7. 设置定时重启任务"
+    echo -e "8. 安装性能测试工具 wrk"
+    echo -e "9. DNS修改"
+    echo -e "10. 流媒体解锁"
+    echo -e "11. 使用 tcptraceroute"
+    echo -e "12. 使用 iperf3 网络测试"
+    echo -e "13. 运行 besttrace 跟踪回城路由"
+    echo -e "14. Dnsmasq解锁Netflix管理"  # 添加一个新选项
+    echo -e "15. 退出${RESET}"
+    read -p "请输入序号： " choice
+    
+    case $choice in
+      1) install_network_tools_and_bbr ;;
+      2) install_docker ;;
+      3) install_xrayr ;;
+      4) install_iptables ;;
+      5) install_speedtest ;;
+      6) disable_ipv6 ;;
+      7) schedule_reboot ;;
+      8) install_wrk ;;
+      9) modify_dns ;;
+      10) streaming_unlock ;;
+      11) use_tcptraceroute ;;
+      12) use_iperf3 ;;
+      13) run_besttrace ;;
+      14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
+      15)
+        echo -e "${MAGENTA}退出程序。${RESET}"
+        exit 0
+        ;;
+      *)
+        echo -e "${RED}无效选择，请重新输入。${RESET}"
+        ;;
+    esac
+  }
+
+  menu  # 调用主菜单函数
 done
