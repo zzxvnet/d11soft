@@ -421,56 +421,65 @@ run_besttrace() {
   echo -e "${RESET}\nbesttrace 命令执行完成。\n"
 }
 
+# Dnsmasq解锁Netflix安装、卸载和附加功能菜单
+dnsmasq_netflix_manage() {
+  while true; do
+    echo "请选择操作："
+    echo "1. 安装 Dnsmasq 解锁 Netflix"
+    echo "2. 卸载 Dnsmasq 解锁 Netflix"
+    echo "3. 附加功能"
+    echo "4. 返回上一页"
+    read -p "请输入选项（1/2/3/4）：" choice
 
+    case $choice in
+      1)
+        install_dnsmasq_netflix
+        ;;
+      2)
+        uninstall_dnsmasq_netflix
+        ;;
+      3)
+        additional_dnsmasq_functions
+        ;;
+      4)
+        return
+        ;;
+      *)
+        echo "无效选择，请重新输入。"
+        continue
+        ;;
+    esac
+  done
+}
+
+# 主菜单
+main_menu() {
+  while true; do
+    echo "请选择操作："
+    echo "1. 安装必要脚本"
+    echo "2. 安装 Docker"
+    echo "3. 一键安装 XrayR"
+    echo "4. 安装 iptables"
+    echo "5. 返回上一页（Dnsmasq解锁Netflix菜单）"
+    read -p "请输入序号： " choice
+
+    case $choice in
+      1) install_network_tools_and_bbr ;;
+      2) install_docker ;;
+      3) install_xrayr ;;
+      4) install_iptables ;;
+      5) return ;;
+      *)
+        echo "无效选择，请重新输入。"
+        continue
+        ;;
+    esac
+  done
+}
 
 # 主程序
 while true; do
   menu
-case $choice in
-    1) install_network_tools_and_bbr ;;
-    2) install_docker ;;
-    3) install_xrayr ;;
-    4) install_iptables ;;
-    5) install_speedtest ;;
-    6) disable_ipv6 ;;
-    7) schedule_reboot ;;
-    8) install_wrk ;;
-    9) modify_dns ;;
-    10) streaming_unlock ;;
-    11) use_tcptraceroute ;;
-    12) use_iperf3 ;;
-    13) run_besttrace ;;
-    14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
-    15)
-      echo -e "${MAGENTA}退出程序。${RESET}"
-      exit 0
-      ;;
-    *)
-      echo -e "${RED}无效选择，请重新输入。${RESET}"
-      ;;
-  esac
-}
-done
-# 主程序
-while true; do
-  echo -e "${GREEN}请选择操作："
-  echo -e "1. 网络工具及BBR安装"
-  echo -e "2. Docker安装"
-  echo -e "3. XrayR一键安装"
-  echo -e "4. iptables安装"
-  echo -e "5. Speedtest 测试"
-  echo -e "6. 关闭 IPv6"
-  echo -e "7. 设置定时重启任务"
-  echo -e "8. 安装性能测试工具 wrk"
-  echo -e "9. DNS修改"
-  echo -e "10. 流媒体解锁"
-  echo -e "11. 使用 tcptraceroute"
-  echo -e "12. 使用 iperf3 网络测试"
-  echo -e "13. 运行 besttrace 跟踪回城路由"
-  echo -e "14. Dnsmasq解锁Netflix管理"
-  echo -e "15. 退出${RESET}"
-  read -p "请输入序号： " choice
-
   case $choice in
     1) install_network_tools_and_bbr ;;
     2) install_docker ;;
@@ -485,7 +494,7 @@ while true; do
     11) use_tcptraceroute ;;
     12) use_iperf3 ;;
     13) run_besttrace ;;
-    14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
+    14) dnsmasq_netflix_manage ;;
     15)
       echo -e "${MAGENTA}退出程序。${RESET}"
       exit 0
