@@ -10,26 +10,6 @@ CYAN='\e[1;36m'
 WHITE='\e[1;37m'
 RESET='\e[0m'
 
-# 主菜单
-menu() {
-  echo -e "${GREEN}请选择操作："
-  echo -e "1. 安装必要脚本"
-  echo -e "2. 安装 Docker"
-  echo -e "3. 一键安装 XrayR"
-  echo -e "4. 一键安装 iptables"
-  echo -e "5. Speedtest 测试"
-  echo -e "6. 关闭 IPv6"
-  echo -e "7. 设置定时重启任务"
-  echo -e "8. 安装性能测试工具 wrk"
-  echo -e "9. DNS修改"
-  echo -e "10. 流媒体解锁"
-  echo -e "11. 使用 tcptraceroute"
-  echo -e "12. 使用 iperf3 网络测试"
-  echo -e "13. 运行 besttrace 跟踪回城路由"
-  echo -e "14. Dnsmasq解锁Netflix管理"  # 添加一个新选项
-  echo -e "15. 退出${RESET}"
-  read -p "请输入序号： " choice
-
 
 # 设置定时重启任务
 schedule_reboot() {
