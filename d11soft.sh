@@ -477,15 +477,18 @@ install_nginx() {
 }
 # 配置 Nginx 反代
 configure_nginx() {
-    read -p "请输入反代的主机名或 IP 地址： " reverse_proxy_host
-    read -p "请输入目标 IP 地址： " target_ip
-    read -p "请输入自定义的 Host 头部信息（例如：api.zzx.com）： " custom_host
+    # 设置默认值
+    proxy_host="默认的反代主机名或 IP 地址"
+    target_ip="默认的目标 IP 地址"
+    custom_host="默认的 Host 头部信息（例如：api.zzxvhub.com）"
+    remote_addr='$remote_addr'
+    proxy_add_x_forwarded_for='$proxy_add_x_forwarded_for'
+    scheme='$scheme'
 
-    # 创建 Nginx 配置文件内容
-    nginx_config="server {
+    echo "正在配置 Nginx..."
+    echo "server {
         listen 80;
-        server_name $reverse_proxy_host;
-
+        server_name $proxy_host;
         location / {
             proxy_pass http://$target_ip;
             proxy_set_header Host $custom_host;
@@ -493,12 +496,9 @@ configure_nginx() {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
         }
-    }"
-
-    # 将内容写入配置文件
-    echo "$nginx_config" | sudo tee /etc/nginx/sites-enabled/zzxvnet.conf > /dev/null
-    sudo systemctl reload nginx
-
+    }" | sudo tee /etc/nginx/sites-available/zzxvnet > /dev/null
+    sudo ln -s /etc/nginx/sites-available/zzxvnet /etc/nginx/sites-enabled/
+    sudo nginx -t && sudo systemctl restart nginx
     echo "Nginx 配置完成。"
 }
 # 卸载 Nginx
