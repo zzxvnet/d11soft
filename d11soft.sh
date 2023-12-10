@@ -505,6 +505,13 @@ EOF"
 
   echo "Nginx 配置完成。"
 }
+# 卸载 Nginx
+uninstall_nginx() {
+  echo "正在卸载 Nginx..."
+  sudo apt-get purge nginx nginx-common
+  sudo apt-get autoremove
+  echo "Nginx 已成功卸载。"
+}
 
 # 主程序
 while true; do
@@ -547,23 +554,25 @@ while true; do
       14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
       15) one_click_dd ;;  # 调用一键DD功能
       16)
-        # Nginx 安装配置菜单
-        while true; do
-          echo "请选择 Nginx 安装配置操作："
-          echo "1. 安装 Nginx"
-          echo "2. 配置 Nginx 反代"
-          echo "3. 返回上级菜单"
+  # Nginx 安装配置菜单
+  while true; do
+    echo "请选择 Nginx 安装配置操作："
+    echo "1. 安装 Nginx"
+    echo "2. 配置 Nginx 反代"
+    echo "3. 卸载 Nginx"
+    echo "4. 返回上级菜单"
 
-          read -p "请输入序号： " nginx_choice
+    read -p "请输入序号： " nginx_choice
 
-          case $nginx_choice in
-            1) install_nginx ;;
-            2) configure_nginx ;;
-            3) break ;;  # 返回上级菜单
-            *) echo "无效选择，请重新输入。" ;;
-          esac
-        done
-        ;;
+    case $nginx_choice in
+      1) install_nginx ;;
+      2) configure_nginx ;;
+      3) uninstall_nginx ;;
+      4) break ;;  # 返回上级菜单
+      *) echo "无效选择，请重新输入。" ;;
+    esac
+  done
+  ;;
       17)
         echo -e "${MAGENTA}退出程序。${RESET}"
         exit 0
