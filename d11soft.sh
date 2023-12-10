@@ -479,10 +479,8 @@ install_nginx() {
 configure_nginx() {
     read -p "请输入反代的主机名或 IP 地址： " proxy_host
     read -p "请输入目标 IP 地址： " target_ip
-    read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host    
-    remote_addr='$remote_addr'
-    proxy_add_x_forwarded_for='$proxy_add_x_forwarded_for'
-    scheme='$scheme'
+    read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host
+
     echo "正在配置 Nginx..."
     echo "server {
         listen 80;
@@ -499,6 +497,7 @@ configure_nginx() {
     sudo nginx -t && sudo systemctl restart nginx
     echo "Nginx 配置完成。"
 }
+
 
 # 卸载 Nginx
 uninstall_nginx() {
