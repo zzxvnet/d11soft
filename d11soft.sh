@@ -482,9 +482,9 @@ configure_nginx() {
     read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host
 
     # 设置默认值
-    remote_addr=$remote_addr
-    proxy_add_x_forwarded_for=$proxy_add_x_forwarded_for
-    scheme=$scheme
+    remote_addr=\$remote_addr
+    proxy_add_x_forwarded_for=\$proxy_add_x_forwarded_for
+    scheme=\$scheme
 
     echo "正在配置 Nginx..."
     echo "server {
