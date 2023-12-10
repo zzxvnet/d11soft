@@ -476,7 +476,8 @@ while true; do
     echo -e "12. 使用 iperf3 网络测试"
     echo -e "13. 运行 besttrace 跟踪回城路由"
     echo -e "14. Dnsmasq解锁Netflix管理"  # 添加一个新选项
-    echo -e "15. 退出${RESET}"
+    echo -e "15. 一键DD系统"
+    echo -e "16. 退出${RESET}"
     read -p "请输入序号： " choice
     
     case $choice in
@@ -494,7 +495,8 @@ while true; do
       12) use_iperf3 ;;
       13) run_besttrace ;;
       14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
-      15)
+      15) one_click_dd ;;  # 调用一键DD功能
+      16)
         echo -e "${MAGENTA}退出程序。${RESET}"
         exit 0
         ;;
