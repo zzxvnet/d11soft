@@ -466,6 +466,45 @@ main_menu() {
     esac
   done
 }
+# 安装 Nginx
+install_nginx() {
+  echo "正在安装 Nginx..."
+  sudo apt-get update
+  sudo apt-get install -y nginx
+  sudo systemctl start nginx
+  sudo systemctl enable nginx
+  echo "Nginx 安装完成。"
+}
+
+# 配置 Nginx 反代
+configure_nginx() {
+  read -p "请输入反代的主机名或 IP 地址： " reverse_proxy_host
+  read -p "请输入目标 IP 地址： " target_ip
+  read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host
+
+  echo "正在配置 Nginx..."
+  sudo touch /etc/nginx/sites-available/zzxvnet.conf
+  sudo bash -c "cat > /etc/nginx/sites-available/zzxvnet.conf <<EOF
+server {
+    listen 80;
+    server_name $reverse_proxy_host;
+
+    location / {
+        proxy_pass http://$target_ip;
+        proxy_set_header Host $custom_host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+EOF"
+
+  sudo ln -s /etc/nginx/sites-available/zzxvnet.conf /etc/nginx/sites-enabled/
+  sudo nginx -t  # 检查配置文件语法是否正确
+  sudo systemctl restart nginx
+
+  echo "Nginx 配置完成。"
+}
 
 # 主程序
 while true; do
@@ -487,7 +526,8 @@ while true; do
     echo -e "13. 运行 besttrace 跟踪回城路由"
     echo -e "14. Dnsmasq解锁Netflix管理"  # 添加一个新选项
     echo -e "15. 一键DD系统"
-    echo -e "16. 退出${RESET}"
+    echo -e "16. Nginx 安装配置（Debian）"
+    echo -e "17. 退出${RESET}"
     read -p "请输入序号： " choice
     
     case $choice in
@@ -507,6 +547,24 @@ while true; do
       14) dnsmasq_netflix_manage ;;  # 调用 Dnsmasq 解锁 Netflix 管理函数
       15) one_click_dd ;;  # 调用一键DD功能
       16)
+        # Nginx 安装配置菜单
+        while true; do
+          echo "请选择 Nginx 安装配置操作："
+          echo "1. 安装 Nginx"
+          echo "2. 配置 Nginx 反代"
+          echo "3. 返回上级菜单"
+
+          read -p "请输入序号： " nginx_choice
+
+          case $nginx_choice in
+            1) install_nginx ;;
+            2) configure_nginx ;;
+            3) break ;;  # 返回上级菜单
+            *) echo "无效选择，请重新输入。" ;;
+          esac
+        done
+        ;;
+      17)
         echo -e "${MAGENTA}退出程序。${RESET}"
         exit 0
         ;;
