@@ -432,6 +432,16 @@ dnsmasq_netflix_manage() {
   done
 }
 
+# 一键DD功能
+one_click_dd() {
+  echo "正在下载一键DD脚本..."
+  wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/installNET/master/Install.sh"
+  echo "添加执行权限..."
+  chmod +x Install.sh
+  echo "运行一键DD脚本..."
+  ./Install.sh
+}
+
 # 主菜单
 main_menu() {
   while true; do
