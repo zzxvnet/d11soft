@@ -479,7 +479,7 @@ install_nginx() {
 configure_nginx() {
     read -p "请输入反代的主机名或 IP 地址： " proxy_host
     read -p "请输入目标 IP 地址： " target_ip
-    read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host
+    read -p "请输入自定义的 Host 头部信息（例如：api.zzx.com）： " custom_host
 
     # 设置默认值
     remote_addr='$remote_addr'
