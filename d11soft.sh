@@ -476,34 +476,30 @@ install_nginx() {
   echo "Nginx 安装完成。"
 }
 
-# 配置 Nginx 反代
-configure_nginx() {
-  read -p "请输入反代的主机名或 IP 地址： " reverse_proxy_host
-  read -p "请输入目标 IP 地址： " target_ip
-  read -p "请输入自定义的 Host 头部信息（例如：api.zzx.com）： " custom_host
+configure_nginx_reverse_proxy() {
+    read -p "请输入反代的主机名或 IP 地址： " reverse_proxy_host
+    read -p "请输入目标 IP 地址： " target_ip
+    read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host
 
-  echo "正在配置 Nginx..."
-  sudo touch /etc/nginx/sites-available/zzxvnet.conf
-  sudo bash -c "cat > /etc/nginx/sites-available/zzxvnet.conf <<EOF
-server {
-    listen 80;
-    server_name $reverse_proxy_host;
+    # 创建 Nginx 配置文件内容
+    nginx_config="server {
+        listen 80;
+        server_name $reverse_proxy_host;
 
-    location / {
-        proxy_pass http://$target_ip;
-        proxy_set_header Host $custom_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOF"
+        location / {
+            proxy_pass http://$target_ip;
+            proxy_set_header Host $custom_host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+        }
+    }"
 
-  sudo ln -s /etc/nginx/sites-available/zzxvnet.conf /etc/nginx/sites-enabled/
-  sudo nginx -t  # 检查配置文件语法是否正确
-  sudo systemctl restart nginx
+    # 将内容写入配置文件
+    echo "$nginx_config" | sudo tee /etc/nginx/sites-enabled/zzxvnet.conf > /dev/null
+    sudo systemctl reload nginx
 
-  echo "Nginx 配置完成。"
+    echo "Nginx 配置完成。"
 }
 # 卸载 Nginx
 uninstall_nginx() {
