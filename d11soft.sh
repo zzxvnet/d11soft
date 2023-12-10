@@ -475,7 +475,7 @@ install_nginx() {
   sudo systemctl enable nginx
   echo "Nginx 安装完成。"
 }
-
+# 配置 Nginx 反代
 configure_nginx() {
     read -p "请输入反代的主机名或 IP 地址： " reverse_proxy_host
     read -p "请输入目标 IP 地址： " target_ip
