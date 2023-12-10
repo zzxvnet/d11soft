@@ -479,7 +479,7 @@ install_nginx() {
 configure_nginx() {
     read -p "请输入反代的主机名或 IP 地址： " reverse_proxy_host
     read -p "请输入目标 IP 地址： " target_ip
-    read -p "请输入自定义的 Host 头部信息（例如：api.zzxvhub.com）： " custom_host
+    read -p "请输入自定义的 Host 头部信息（例如：api.zzx.com）： " custom_host
 
     # 创建 Nginx 配置文件内容
     nginx_config="server {
@@ -489,9 +489,9 @@ configure_nginx() {
         location / {
             proxy_pass http://$target_ip;
             proxy_set_header Host $custom_host;
-            proxy_set_header X-Real-IP \$remote_addr;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$scheme;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
         }
     }"
 
