@@ -503,6 +503,9 @@ configure_nginx() {
     sudo ln -s /etc/nginx/sites-available/zzxvnet /etc/nginx/sites-enabled/
     sudo nginx -t && sudo systemctl restart nginx
     echo "Nginx 配置完成。"
+    echo "显示状态"
+    sudo systemctl status nginx
+
 }
 
 
