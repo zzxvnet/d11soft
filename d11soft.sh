@@ -73,6 +73,20 @@ install_network_tools_and_bbr() {
       echo "bbr 已经启用。"
     fi
   }
+  # 安装 dnsutils 软件包
+  install_package() {
+    package=$1
+    if ! dpkg -l | grep -q "^ii.*$package"; then
+      echo "正在安装 $package ..."
+      sudo apt-get install -y "$package"
+    else
+      echo "$package 已经安装。"
+    fi
+  }
+
+  # 安装 dnsutils
+  install_package dnsutils
+   }
 
   # 检查 ifconfig
   if ! command -v ifconfig &>/dev/null; then
@@ -277,6 +291,7 @@ modify_dns() {
   # 执行 nslookup 命令以验证 DNS 修改
   echo "正在执行 nslookup youtube.com："
   nslookup youtube.com
+  nslookup netflix.com
 }
 
 
