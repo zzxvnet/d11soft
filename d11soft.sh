@@ -86,7 +86,7 @@ install_network_tools_and_bbr() {
 
   # 安装 dnsutils
   install_package dnsutils
-   }
+   
 
   # 检查 ifconfig
   if ! command -v ifconfig &>/dev/null; then
