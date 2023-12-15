@@ -534,6 +534,19 @@ uninstall_nginx() {
   echo "Nginx 已成功卸载。"
 }
 
+# BBR优化文件
+optimize_bbr() {
+  echo "正在下载BBR优化文件..."
+  wget -q -O bbr_sysctl.conf https://example.com/bbr_sysctl.conf  # 将 URL 替换为你的BBR优化文件的下载链接
+
+  echo "替换sysctl.conf文件..."
+  sudo mv /etc/sysctl.conf /etc/sysctl.conf.backup  # 备份旧的sysctl.conf文件
+  sudo mv bbr_sysctl.conf /etc/sysctl.conf  # 将新的BBR优化文件移动到sysctl.conf位置
+
+  echo "应用新的sysctl配置..."
+  sudo sysctl -p  # 应用新的sysctl配置
+}
+
 # 主程序
 while true; do
   # 主菜单
@@ -555,7 +568,8 @@ while true; do
     echo -e "14. Dnsmasq解锁Netflix管理"  # 添加一个新选项
     echo -e "15. 一键DD系统"
     echo -e "16. Nginx 安装配置（Debian）"
-    echo -e "17. 退出${RESET}"
+    echo -e "17. BBR优化文件"
+    echo -e "18. 退出${RESET}"
     read -p "请输入序号： " choice
     
     case $choice in
@@ -594,7 +608,8 @@ while true; do
     esac
   done
   ;;
-      17)
+      17) optimize_bbr ;;
+      18)
         echo -e "${MAGENTA}退出程序。${RESET}"
         exit 0
         ;;
