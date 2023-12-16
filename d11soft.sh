@@ -598,7 +598,7 @@ while true; do
     echo -e "16. Nginx 安装配置（Debian）"
     echo -e "17. BBR优化文件"
     echo -e "18. 设置定时清理日志任务"
-    echo -e "18. 退出${RESET}"
+    echo -e "19. 退出${RESET}"
     read -p "请输入序号： " choice
     
     case $choice in
