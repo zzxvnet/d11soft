@@ -546,6 +546,34 @@ optimize_bbr() {
   echo "应用新的sysctl配置..."
   sudo sysctl -p  # 应用新的sysctl配置
 }
+# 设置定时清理日志任务
+schedule_log_cleanup() {
+  echo "正在设置定时清理日志任务..."
+
+  # 清理日志脚本
+  cleanup_script="# Clean system logs
+echo 'Cleaning system logs...'
+sudo find /var/log -type f -name '*.log*' -exec truncate --size=0 {} \;
+
+# Rotate logs for rsyslogd
+echo 'Rotating rsyslogd logs...'
+sudo service rsyslog rotate
+
+# Limit journal log size for systemd-journal
+echo 'Limiting systemd-journal log size...'
+sudo journalctl --vacuum-size=100M
+
+echo 'Log cleanup complete.'
+"
+
+  # 将清理脚本写入文件
+  echo "$cleanup_script" | sudo tee /usr/local/bin/log_cleanup.sh > /dev/null
+  sudo chmod +x /usr/local/bin/log_cleanup.sh
+
+  # 编辑定时任务
+  echo "0 0 * * * /usr/local/bin/log_cleanup.sh" | sudo tee -a /etc/crontab
+  echo "定时清理日志任务已设置，每天午夜将清理日志文件。"
+}
 
 # 主程序
 while true; do
@@ -569,6 +597,7 @@ while true; do
     echo -e "15. 一键DD系统"
     echo -e "16. Nginx 安装配置（Debian）"
     echo -e "17. BBR优化文件"
+    echo -e "18. 设置定时清理日志任务"
     echo -e "18. 退出${RESET}"
     read -p "请输入序号： " choice
     
@@ -609,7 +638,8 @@ while true; do
   done
   ;;
       17) optimize_bbr ;;
-      18)
+      18) schedule_log_cleanup ;;
+      19)
         echo -e "${MAGENTA}退出程序。${RESET}"
         exit 0
         ;;
