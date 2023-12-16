@@ -149,44 +149,12 @@ install_xrayr() {
 # 获取默认网关接口
 gateway_interface=$(ip route | awk '/default/ { print $5 }')
 
-# 第四个菜单选项
+# iptables安装
 install_iptables() {
-  # 检查是否已安装iptables
-  if ! command -v iptables &>/dev/null; then
-    echo -e "${YELLOW}正在安装 iptables ..."
-    sudo apt-get update
-    sudo apt-get install -y iptables
-  fi
-
-  enable_ip_forward  # 启用IP转发
-
-  echo -e "${GREEN}开始设置iptables规则...\n"
-
-  read -p "请输入要转发的目标IP地址： " target_ip
-  read -p "请选择转发方式：\n  1. 端口到端口\n  2. Web端口转发\n  3. 全端口转发\n请选择[1/2/3]: " forward_choice
-
-  case $forward_choice in
-    1)
-      read -p "请输入源端口： " source_port
-      read -p "请输入目标端口： " target_port
-      # 端口到端口转发规则
-      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport $source_port -j DNAT --to-destination $target_ip:$target_port
-      ;;
-    2)
-      # Web端口转发规则
-      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport 80 -j DNAT --to-destination $target_ip:8080
-      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --dport 443 -j DNAT --to-destination $target_ip:8443
-      ;;
-    3)
-      # 全端口转发规则
-      sudo iptables -t nat -A PREROUTING -p tcp -i "$gateway_interface" --sport 1:65535 -j DNAT --to-destination $target_ip:B
-      ;;
-    *)
-      echo -e "${RED}无效选择，请重新输入。${RESET}"
-      ;;
-  esac
-
-  echo -e "${RESET}\niptables规则设置完成。\n"
+  echo "正在下载 iptables 优化脚本..."
+  wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/iptables-pf.sh
+  chmod +x iptables-pf.sh
+  bash iptables-pf.sh
 }
 
 
