@@ -543,6 +543,25 @@ echo 'Log cleanup complete.'
   echo "定时清理日志任务已设置，每天午夜将清理日志文件。"
 }
 
+# 新增的函数，检查并安装 wget
+install_wget() {
+  if ! command -v wget &>/dev/null; then
+    echo "正在安装 wget..."
+    sudo apt-get update
+    sudo apt-get install -y wget
+  else
+    echo "wget 已经安装。"
+  fi
+}
+
+# 新的选项，启动BBR并执行命令
+start_bbr_and_run_command() {
+  install_wget  # 检查并安装 wget
+
+  echo "正在启动 BBR 并执行命令..."
+  wget "https://raw.githubusercontent.com/cx9208/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
+}
+
 # 主程序
 while true; do
   # 主菜单
@@ -566,6 +585,7 @@ while true; do
     echo -e "16. Nginx 安装配置（Debian）"
     echo -e "17. BBR优化文件"
     echo -e "18. 设置定时清理日志任务"
+    echo -e "14. 启动BBR并执行命令"
     echo -e "19. 退出${RESET}"
     read -p "请输入序号： " choice
     
@@ -607,7 +627,8 @@ while true; do
   ;;
       17) optimize_bbr ;;
       18) schedule_log_cleanup ;;
-      19)
+      19) start_bbr_and_run_command ;;
+      20)
         echo -e "${MAGENTA}退出程序。${RESET}"
         exit 0
         ;;
