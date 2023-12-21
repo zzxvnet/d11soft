@@ -58,7 +58,7 @@ install_package() {
     if ! dpkg -l | grep -q "^ii.*$package"; then
         sudo apt-get install -y "$package" || { echo "${RED}安装 $package 失败${RESET}"; exit 1; }
     else
-        echo "${GREEN}$package 已经安装。${RESET}"
+        echo -e "${GREEN}$package 已经安装。${RESET}"
     fi
 }
 
@@ -78,7 +78,7 @@ install_network_tools_and_bbr() {
       sudo bash -c 'echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf'
       sudo sysctl -p
     else
-      echo "bbr 已经启用。"
+      echo -e "bbr 已经启用。"
     fi
   }
   # 安装 dnsutils 软件包
@@ -89,7 +89,7 @@ install_package() {
     sudo apt-get update
     sudo apt-get install -y "$package" || { echo "安装 $package 失败"; exit 1; }
   else
-    echo "$package 已经安装。"
+    echo  -e "$package 已经安装。"
   fi
 }
 
@@ -560,7 +560,7 @@ install_wget() {
     sudo apt-get update
     sudo apt-get install -y wget
   else
-    echo "wget 已经安装。"
+    echo -e "wget 已经安装。"
   fi
 }
 
