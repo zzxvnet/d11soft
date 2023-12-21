@@ -36,14 +36,6 @@ schedule_reboot() {
       printf "${RED}无效选择，请重新输入。${RESET}\n"
       ;;
 
-  if ! echo "0 5 * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job; then
-    echo "定时重启任务设置失败"
-    return 1
-  fi
-
-  echo "定时重启任务设置成功"
-}
-
   esac
 
   # 显示当前的定时任务列表
