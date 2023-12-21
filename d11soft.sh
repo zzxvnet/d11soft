@@ -658,5 +658,5 @@ while true; do
     esac
   }
 
-  main_menu  # 调用主菜单函数
+  menu  # 调用主菜单函数
 done
