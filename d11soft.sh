@@ -35,6 +35,15 @@ schedule_reboot() {
     *)
       printf "${RED}无效选择，请重新输入。${RESET}\n"
       ;;
+
+  if ! echo "0 5 * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job; then
+    echo "定时重启任务设置失败"
+    return 1
+  fi
+
+  echo "定时重启任务设置成功"
+}
+
   esac
 
   # 显示当前的定时任务列表
@@ -53,6 +62,10 @@ install_package() {
   else
     echo "$package 已经安装。"
   fi
+}
+update_package_list() {
+  echo "更新软件包列表..."
+  sudo apt-get update || { echo "软件包列表更新失败"; exit 1; }
 }
 
 # 安装网络工具和BBR
@@ -74,15 +87,17 @@ install_network_tools_and_bbr() {
     fi
   }
   # 安装 dnsutils 软件包
-  install_package() {
-    package=$1
-    if ! dpkg -l | grep -q "^ii.*$package"; then
-      echo "正在安装 $package ..."
-      sudo apt-get install -y "$package"
-    else
-      echo "$package 已经安装。"
-    fi
-  }
+install_package() {
+  local package=$1
+  if ! dpkg -l | grep -q "^ii.*$package"; then
+    echo "正在安装 $package ..."
+    sudo apt-get update
+    sudo apt-get install -y "$package" || { echo "安装 $package 失败"; exit 1; }
+  else
+    echo "$package 已经安装。"
+  fi
+}
+
 
   # 安装 dnsutils
   install_package dnsutils
