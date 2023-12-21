@@ -10,55 +10,58 @@ CYAN='\e[1;36m'
 WHITE='\e[1;37m'
 RESET='\e[0m'
 
-
-# 设置定时重启任务
-schedule_reboot() {
-  printf "${YELLOW}请选择定时重启任务的类型：\n"
-  printf "1. 每天早上5点重启系统\n"
-  printf "2. 自定义重启时间${RESET}\n"
-  read -p "请输入选择的序号： " reboot_choice
-
-  case $reboot_choice in
-    1)
-      printf "${GREEN}正在设置标准定时重启任务...\n"
-      # 创建标准的每天早上5点重启的定时任务
-      echo "0 5 * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job
-      printf "标准定时重启任务已设置，每天早上5点将进行系统重启。${RESET}\n"
-      ;;
-    2)
-      printf "${GREEN}请输入自定义的定时重启时间，例如：每天下午3点重启系统，输入：15 15\n"
-      read -p "请输入定时任务的时间设置： " custom_time
-      # 创建自定义时间的定时任务
-      echo "$custom_time * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job
-      printf "自定义定时重启任务已设置，每天 $custom_time 将进行系统重启。${RESET}\n"
-      ;;
-    *)
-      printf "${RED}无效选择，请重新输入。${RESET}\n"
-      ;;
-
-  esac
-
-  # 显示当前的定时任务列表
-  printf "${BLUE}当前定时任务列表：\n"
-  sudo cat /etc/cron.d/my_custom_reboot_job
-  printf "${RESET}\n"
-}
-
-# 检查并安装缺失的软件包
-install_package() {
-  package=$1
-  if ! dpkg -l | grep -q "^ii.*$package"; then
-    echo "正在安装 $package ..."
-    sudo apt-get update
-    sudo apt-get install -y "$package"
-  else
-    echo "$package 已经安装。"
-  fi
-}
+# 更新软件包列表
 update_package_list() {
   echo "更新软件包列表..."
   sudo apt-get update || { echo "软件包列表更新失败"; exit 1; }
 }
+
+# 设置定时重启任务
+schedule_reboot() {
+    echo "${YELLOW}请选择定时重启任务的类型：${RESET}"
+    echo "1. 每天早上5点重启系统"
+    echo "2. 自定义重启时间"
+    read -p "请输入选择的序号： " reboot_choice
+
+    case $reboot_choice in
+        1)
+            set_standard_reboot
+            ;;
+        2)
+            set_custom_reboot
+            ;;
+        *)
+            echo "${RED}无效选择，请重新输入。${RESET}"
+            ;;
+    esac
+}
+
+# 设置标准定时重启
+set_standard_reboot() {
+    echo "${GREEN}正在设置每天早上5点重启的定时任务...${RESET}"
+    echo "0 5 * * * root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job >/dev/null
+    echo "${GREEN}标准定时重启任务已设置。${RESET}"
+}
+
+# 设置自定义定时重启
+set_custom_reboot() {
+    echo "${GREEN}请输入自定义的定时重启时间，格式 [分 时]，例如：15 15 代表每天下午3点15分。${RESET}"
+    read -p "请输入定时任务的时间设置： " custom_time
+    echo "$custom_time root /sbin/reboot" | sudo tee /etc/cron.d/my_custom_reboot_job >/dev/null
+    echo "${GREEN}自定义定时重启任务已设置。${RESET}"
+}
+
+# 安装软件包
+install_package() {
+    local package=$1
+    echo "${BLUE}正在检查并安装 $package...${RESET}"
+    if ! dpkg -l | grep -q "^ii.*$package"; then
+        sudo apt-get install -y "$package" || { echo "${RED}安装 $package 失败${RESET}"; exit 1; }
+    else
+        echo "${GREEN}$package 已经安装。${RESET}"
+    fi
+}
+
 
 # 安装网络工具和BBR
 install_network_tools_and_bbr() {
@@ -569,6 +572,19 @@ start_bbr_and_run_command() {
   wget "https://raw.githubusercontent.com/cx9208/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
 }
 
+# 主函数
+main() {
+    update_package_list
+    install_package curl
+    install_package wget
+    schedule_reboot
+    install_network_tools_and_bbr
+    install_docker
+    # ... 可能的其他操作 ...
+}
+
+# 执行主函数
+main
 # 主程序
 while true; do
   # 主菜单
