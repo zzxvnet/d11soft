@@ -577,10 +577,7 @@ main() {
     update_package_list
     install_package curl
     install_package wget
-    schedule_reboot
-    install_network_tools_and_bbr
-    install_docker
-    # ... 可能的其他操作 ...
+
 }
 
 # 执行主函数
