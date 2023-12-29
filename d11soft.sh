@@ -118,6 +118,7 @@ install_package() {
 install_docker() {
   echo "正在下载 Docker 安装脚本..."
   wget -q -O docker_installation.sh https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh
+  bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh)
   echo "下载完成。"
 
   # 询问用户是否要安装 Docker
